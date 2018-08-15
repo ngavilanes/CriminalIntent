@@ -38,11 +38,11 @@ public class Crime {
         mDate = date;
     }
 
-    public boolean isMsolved() {
+    public boolean isSolved() {
         return msolved;
     }
 
-    public void setMsolved(boolean msolved) {
-        this.msolved = msolved;
+    public void setSolved(boolean solved) {
+        this.msolved = solved;
     }
 }
