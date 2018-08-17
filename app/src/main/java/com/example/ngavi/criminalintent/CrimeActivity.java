@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 public class CrimeActivity extends SingleFragmentActivity {
     @Override
-    protected Fragment createFragment() {
+    protected Fragment createFragment() { //this is the extending aspect of SingleFragmentActivity --> having access to createFragment class and implementing it your own way
         return new CrimeFragment();
     }
 }

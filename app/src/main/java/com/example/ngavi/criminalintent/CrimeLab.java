@@ -10,14 +10,14 @@ public class CrimeLab {
     private static CrimeLab sCrimeLab;
     private List<Crime> mCrimes;
 
-    public static CrimeLab get(Context context){
+    public static CrimeLab get(Context context){ //method that will provide CrimeLab unless it is null then it will create a new CrimeLab ArrayList
         if(sCrimeLab==null){
             sCrimeLab = new CrimeLab(context);
         }
         return sCrimeLab;
     }
 
-    private CrimeLab(Context context){ //constructor for crimelab that will hold every crime
+    private  CrimeLab(Context context){ // private constructor(singleton) for crimelab that will hold every crime
         mCrimes = new ArrayList<>();
         for(int i = 0; i<100; i++){
             Crime crime = new Crime();

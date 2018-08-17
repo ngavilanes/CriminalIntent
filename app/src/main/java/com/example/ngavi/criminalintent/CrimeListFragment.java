@@ -22,9 +22,10 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_crime_list,container,false);
-        mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
-        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        View view = inflater.inflate(R.layout.fragment_crime_list,container,false); //converting xml file to java view objects
+        mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view); //using fragment_crime_list view to find the recyclerview ID
+        mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); //recyclerView require LayoutManagers to work properly--> it positions objects and manages scrolling
+        //LinearLayoutManager - positions items in the list vertically
 
         UpdateUI();
         return view;
@@ -32,10 +33,12 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
     }
 
     private void UpdateUI(){ //communicating between recycler view and adapter
-        CrimeLab crimeLab = CrimeLab.get(getActivity());
+        CrimeLab crimeLab = CrimeLab.get(getActivity()); //getting the static crimelab from the fragment's associated activity
         List<Crime> crimes = crimeLab.getCrimes();
         mAdapter = new CrimeAdapter(crimes);
         mCrimeRecyclerView.setAdapter(mAdapter);
+
+
     }
 
 
@@ -43,31 +46,33 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        //fields determined by the list fragment layout (fragment_crime_list.xml)
         private TextView mTitleTextView;
         private TextView mDateTextview;
         private Crime mcrime;
 
-
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent){ //Crimeholder constructor
-            super(inflater.inflate(R.layout.list_item_crime, parent, false));
+
+            super(inflater.inflate(R.layout.list_item_crime,parent,false));   //inflating xml file of custom row element with superclass constructor--> provides itemview (reference to view you just passed)
 
             mTitleTextView = (TextView) itemView.findViewById(R.id.crime_title);
             mDateTextview = (TextView)itemView.findViewById(R.id.crime_date);
 
-            itemView.setOnClickListener(this);
-
-
-
+            itemView.setOnClickListener(this); //creates listener for entire itemview/list_item_crime instance/row of recycler_view
         }
-        public void Bind(Crime crime){
+
+
+        public void Bind(Crime crime){ //binding the current viewHolder ItemView with its specific crime sent by the Adapter
             mcrime = crime;
             mTitleTextView.setText(mcrime.getTitle());
             mDateTextview.setText(mcrime.getDate().toString());
         }
 
+
         @Override
-        public void onClick(View v) {
+        public void onClick(View v) { //when each viewholder row is touched the specific crime will show
             Toast.makeText(getActivity(),mcrime.getTitle()+ " clicked!",Toast.LENGTH_SHORT).show();
+
         }
 
 
@@ -88,7 +93,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         @Override
         public CrimeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { //called by recyclerview when a viewholder is needed to display an item
            LayoutInflater layoutinflater = LayoutInflater.from(getActivity());
-           return new CrimeHolder(layoutinflater, parent);
+           return new CrimeHolder(layoutinflater, parent); //used to construct new crimeholder using LayoutInflater just created
         }
 
         @Override
