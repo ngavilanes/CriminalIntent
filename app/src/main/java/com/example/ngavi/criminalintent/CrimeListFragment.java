@@ -1,6 +1,7 @@
 package com.example.ngavi.criminalintent;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,11 +35,24 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
     }
 
+    @Override
+    public void onResume() { //must override because you cannot assume current activity is stopped when another activity is called - safest place to update fragment view
+        super.onResume();
+        UpdateUI(); //checks for changes to the Crime detail view
+    }
+
+
     private void UpdateUI() { //communicating between recycler view and adapter
         CrimeLab crimeLab = CrimeLab.get(getActivity()); //getting the static crimelab from the fragment's associated activity
         List<Crime> crimes = crimeLab.getCrimes();
-        mAdapter = new CrimeAdapter(crimes);
-        mCrimeRecyclerView.setAdapter(mAdapter);
+
+        if(mAdapter==null) {
+            mAdapter = new CrimeAdapter(crimes);
+            mCrimeRecyclerView.setAdapter(mAdapter);
+        }
+        else{
+            mAdapter.notifyDataSetChanged(); //detects changes to UI (title change)
+        }
 
 
     }
@@ -48,6 +63,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         private TextView mTitleTextView;
         private TextView mDateTextview;
         private Crime mcrime;
+        private ImageView mImageView;
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent, int layoutid) { //Crimeholder constructor
 
@@ -55,6 +71,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
             mTitleTextView = (TextView) itemView.findViewById(R.id.crime_title);
             mDateTextview = (TextView) itemView.findViewById(R.id.crime_date);
+            mImageView =(ImageView) itemView.findViewById(R.id.crime_solved);
 
             itemView.setOnClickListener(this); //creates listener for entire itemview/list_item_crime instance/row of recycler_view
         }
@@ -65,15 +82,20 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         public void Bind(Crime crime) { //binding the current viewHolder ItemView with its specific crime sent by the Adapter
             mcrime = crime;
             mTitleTextView.setText(mcrime.getTitle());
-            mDateTextview.setText(mcrime.getDate().toString());
+           // mDateTextview.setText(mcrime.getDate().toString());
+           mDateTextview.setText(mcrime.getParsedDate());
+            mImageView.setVisibility(crime.isSolved() ? View.VISIBLE : View.GONE);
         }
 
 
         @Override
-        public void onClick(View v) { //when each viewholder row is touched the specific crime will show
-            Toast.makeText(getActivity(), mcrime.getTitle() + " clicked!", Toast.LENGTH_SHORT).show();
+        public void onClick(View v) { //when each viewholder row is touched the specific crime will show --> will use Intent to start Detail activity
+            //Toast.makeText(getActivity(), mcrime.getTitle() + " clicked!", Toast.LENGTH_SHORT).show();
+            Intent intent = new CrimeActivity().NewIntent(getActivity(), mcrime.getID()); //calling new intent method from crimeActivity
+            startActivity(intent);
 
         }
+
 
     }
         //-------------------------------------------------------------------------------------------------------------------------------------//
@@ -166,5 +188,9 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
                return 1;
            }
         }
+
+
+
+
     }
 }

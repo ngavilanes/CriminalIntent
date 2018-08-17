@@ -33,14 +33,19 @@ public class CrimeLab {
     }
 
     public Crime getCrime(UUID id){
-
+  /*    //  Crime crime =  mCrimes.get(mCrimes.indexOf(id)); //possibly enhance searching of crime
+     //   if(crime!=null){
+      //      return crime;
+        }
+        else{
+            return null;
+        }*/
        for(Crime crime : mCrimes){  // for each loop
            if(crime.getID().equals(id)){
                return crime;
            }
        }
-       return null;
-
+     return null;
     }
 
 
