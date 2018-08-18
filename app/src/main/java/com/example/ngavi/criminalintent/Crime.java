@@ -21,6 +21,7 @@ public class Crime {
 
     public Crime(){
         mID = UUID.randomUUID();
+
         mDate = new Date();
         SimpleDateFormat df = new SimpleDateFormat(" EEEE | MMM,dd,yyyy | hh:mm aaa"); //ALWAYS USE SimpleDateFormat!!!!!
         mParsedDate = df.format(mDate);

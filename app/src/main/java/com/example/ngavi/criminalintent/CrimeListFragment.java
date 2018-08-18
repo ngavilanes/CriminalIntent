@@ -16,11 +16,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.UUID;
 
 public class CrimeListFragment extends android.support.v4.app.Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
+    public int mLastPositionClicked;
 
     @Nullable
     @Override
@@ -44,14 +48,15 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
     private void UpdateUI() { //communicating between recycler view and adapter
         CrimeLab crimeLab = CrimeLab.get(getActivity()); //getting the static crimelab from the fragment's associated activity
-        List<Crime> crimes = crimeLab.getCrimes();
+      //  List<Crime> crimes = crimeLab.getCrimes();
+        LinkedHashMap<UUID,Crime> crimes = crimeLab.getCrimes();
 
         if(mAdapter==null) {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         }
         else{
-            mAdapter.notifyDataSetChanged(); //detects changes to UI (title change)
+            mAdapter.notifyItemChanged(mLastPositionClicked); //detects changes to UI (title change)
         }
 
 
@@ -64,6 +69,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         private TextView mDateTextview;
         private Crime mcrime;
         private ImageView mImageView;
+        private int mposition;
 
         public CrimeHolder(LayoutInflater inflater, ViewGroup parent, int layoutid) { //Crimeholder constructor
 
@@ -79,8 +85,9 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
 
 
-        public void Bind(Crime crime) { //binding the current viewHolder ItemView with its specific crime sent by the Adapter
+        public void Bind(Crime crime, int position) { //binding the current viewHolder ItemView with its specific crime sent by the Adapter
             mcrime = crime;
+            mposition = position;
             mTitleTextView.setText(mcrime.getTitle());
            // mDateTextview.setText(mcrime.getDate().toString());
            mDateTextview.setText(mcrime.getParsedDate());
@@ -93,6 +100,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
             //Toast.makeText(getActivity(), mcrime.getTitle() + " clicked!", Toast.LENGTH_SHORT).show();
             Intent intent = new CrimeActivity().NewIntent(getActivity(), mcrime.getID()); //calling new intent method from crimeActivity
             startActivity(intent);
+            mLastPositionClicked = mposition;
 
         }
 
@@ -103,9 +111,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         //ViewHolder for Serious items
     //
     private class SeriousCrimeHolder extends CrimeHolder {
-            private TextView mTitleTextView;
-            private TextView mDateTextview;
-            private Crime mcrime;
+
             private Button mButton;
 
 
@@ -143,9 +149,9 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
 
     private class CrimeAdapter extends RecyclerView.Adapter<CrimeHolder>{
-        private List<Crime> mCrimes;
+        private LinkedHashMap<UUID,Crime> mCrimes;
 
-        public CrimeAdapter(List<Crime> Crimes){
+        public CrimeAdapter(LinkedHashMap<UUID,Crime> Crimes){
             mCrimes = Crimes;
         }
 
@@ -167,8 +173,9 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull CrimeHolder holder, int position) {
-            Crime crime = mCrimes.get(position);
-            holder.Bind(crime);
+            //Crime crime = mCrimes.get(position);
+            Crime crime = (Crime) mCrimes.values().toArray()[position];
+            holder.Bind(crime, position);
 
         }
 
@@ -179,8 +186,9 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
         @Override
         public int getItemViewType(int position) { //used to determine what type of view holder to inflate
-           Crime mcrime = mCrimes.get(position);
-           if(mcrime.getRequiresPolice()==true){
+          // Crime mcrime = mCrimes.get(position);
+            Crime mcrime = (Crime) mCrimes.values().toArray()[position];
+           if(mcrime.getRequiresPolice()){
                return 0;
 
            }
