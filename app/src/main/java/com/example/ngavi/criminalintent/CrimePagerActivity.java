@@ -9,15 +9,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.UUID;
 
 public class CrimePagerActivity extends AppCompatActivity {
-    private ViewPager mViewPager;
+    private static ViewPager mViewPager;
     private LinkedHashMap<UUID, Crime> mCrimes;
     private static final String EXTRA_CRIME_ID = "com.example.ngavi.criminalintent.crime_id";
+    public static int mpos;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,13 +49,18 @@ public class CrimePagerActivity extends AppCompatActivity {
         });
 
         UUID id =(UUID)getIntent().getSerializableExtra(EXTRA_CRIME_ID);
-        int pos = new ArrayList<Crime>(mCrimes.values()).indexOf(mCrimes.get(id));
-        mViewPager.setCurrentItem(pos);
+        mpos = new ArrayList<Crime>(mCrimes.values()).indexOf(mCrimes.get(id));
+        mViewPager.setCurrentItem(mpos);
 
     }
     public static Intent NewIntent(Context packageContext, UUID id){
         Intent intent = new Intent(packageContext,CrimePagerActivity.class); //Intent is passing data from CrimeListFragment to CrimeActivity in order to send crime data to CrimeFragment
         intent.putExtra(EXTRA_CRIME_ID,id); //passing Crime ID to crimeFragment to update fields
         return intent;
+    }
+
+    public static void SetPos(int pos){
+        mpos = pos;
+        mViewPager.setCurrentItem(mpos);
     }
 }

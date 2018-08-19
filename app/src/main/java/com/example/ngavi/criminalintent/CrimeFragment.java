@@ -26,6 +26,8 @@ public class CrimeFragment extends Fragment{
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+    private Button mBackButton;
+    private Button mFrontButton;
 
 
 
@@ -85,6 +87,22 @@ public class CrimeFragment extends Fragment{
             }
         });
 
+      mBackButton = v.findViewById(R.id.jump_End_Button);
+        mBackButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                CrimePagerActivity.SetPos(CrimeLab.get(getActivity()).getCrimes().size());
+            }
+        });
+      mFrontButton = v.findViewById(R.id.jump_Front_Button);
+      mFrontButton.setOnClickListener(new OnClickListener() {
+          @Override
+          public void onClick(View v) {
+              CrimePagerActivity.SetPos(0);
+
+          }
+      });
 
 
         return v;
