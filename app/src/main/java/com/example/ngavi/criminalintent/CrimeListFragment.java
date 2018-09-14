@@ -98,7 +98,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         @Override
         public void onClick(View v) { //when each viewholder row is touched the specific crime will show --> will use Intent to start Detail activity
             //Toast.makeText(getActivity(), mcrime.getTitle() + " clicked!", Toast.LENGTH_SHORT).show();
-            Intent intent = new CrimePagerActivity().NewIntent(getActivity(), mcrime.getID()); //calling new intent method from crimeActivity
+            Intent intent = new CrimePagerActivity().NewIntent(getActivity(), mcrime.getID()); //calling new intent method from crimePager
             startActivity(intent);
             mLastPositionClicked = mposition;
 

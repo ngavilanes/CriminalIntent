@@ -1,10 +1,13 @@
 package com.example.ngavi.criminalintent;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -15,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import java.util.Date;
 import java.util.UUID;
 
 import static android.widget.CompoundButton.*;
@@ -22,12 +26,14 @@ import static android.widget.CompoundButton.*;
 public class CrimeFragment extends Fragment{
     //always have no more than 2-3 fragments on a single page/activity
     private static final String ARG_CRIME_ID ="crime_id";
+    private static final String DIALOG_DATE = "DialogDate";
     private Crime mcrime;
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
-    private Button mBackButton;
-    private Button mFrontButton;
+    private static final int REQUEST_DATE = 0;
+
+
 
 
 
@@ -46,7 +52,7 @@ public class CrimeFragment extends Fragment{
         //mcrime = new Crime();
        // UUID id = (UUID)getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
         UUID id = (UUID)getArguments().getSerializable(ARG_CRIME_ID); //getting id from attached arguments instead of associated activity(Keeps fragment independent)
-        mcrime = CrimeLab.get(getActivity()).getCrime(id);
+        mcrime = CrimeLab.get(getActivity()).getCrime(id); //using the id put into the arguments to obtain the crime from crimelab
     }
 
     @Nullable
@@ -73,9 +79,22 @@ public class CrimeFragment extends Fragment{
             }
         });
 
-        mDateButton =(Button) v.findViewById(R.id.crime_date);
-        mDateButton.setText(mcrime.getDate().toString());
-        mDateButton.setEnabled(false);
+        mDateButton =(Button) v.findViewById(R.id.crime_date); //We will place a dialog feature on the date button so users can change the date
+        updateDate();
+        mDateButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = getFragmentManager();
+                DatePickerFragment dialog = DatePickerFragment.newInstance(mcrime.getDate());
+                dialog.setTargetFragment(CrimeFragment.this,REQUEST_DATE); //tells target what receiving the result of picking a date
+
+                dialog.show(fm, DIALOG_DATE); // tag uniquely identifies DialogFragment in the list of fragments managed by the fragment manager
+            }
+        });
+
+
+
+
 
         mSolvedCheckBox = (CheckBox) v.findViewById(R.id.crime_solved);
         mSolvedCheckBox.setChecked(mcrime.isSolved());
@@ -87,27 +106,29 @@ public class CrimeFragment extends Fragment{
             }
         });
 
-      mBackButton = v.findViewById(R.id.jump_End_Button);
-        mBackButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                CrimePagerActivity.SetPos(CrimeLab.get(getActivity()).getCrimes().size());
-            }
-        });
-      mFrontButton = v.findViewById(R.id.jump_Front_Button);
-      mFrontButton.setOnClickListener(new OnClickListener() {
-          @Override
-          public void onClick(View v) {
-              CrimePagerActivity.SetPos(0);
-
-          }
-      });
 
 
         return v;
 
 
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) { //getting the data for date after picking from the calendar dialogue
+        if(resultCode!= Activity.RESULT_OK){
+            return;
+        }
+        if(requestCode==REQUEST_DATE){
+            Date date = (Date)data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+            mcrime.setDate(date);
+            updateDate();
+        }
+
+    }
+
+    private void updateDate() {
+        mDateButton.setText(mcrime.getDate().toString());
     }
 }
