@@ -11,6 +11,9 @@ import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.UUID;
 
 import static android.widget.CompoundButton.*;
@@ -31,6 +35,7 @@ public class CrimeFragment extends Fragment{
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+    private CheckBox mSeriousCheckBox;
     private static final int REQUEST_DATE = 0;
 
 
@@ -53,6 +58,7 @@ public class CrimeFragment extends Fragment{
        // UUID id = (UUID)getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
         UUID id = (UUID)getArguments().getSerializable(ARG_CRIME_ID); //getting id from attached arguments instead of associated activity(Keeps fragment independent)
         mcrime = CrimeLab.get(getActivity()).getCrime(id); //using the id put into the arguments to obtain the crime from crimelab
+        setHasOptionsMenu(true);  //MUST ALWAYS SET TRUE WHEN THERE IS A MENU LAYOUT TO BE INFLATED
     }
 
     @Nullable
@@ -106,6 +112,17 @@ public class CrimeFragment extends Fragment{
             }
         });
 
+//        mSeriousCheckBox = (CheckBox) v.findViewById(R.id.crime_serious);
+//        mSolvedCheckBox.setChecked(mcrime.getRequiresPolice());
+//        mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//              //  mcrime.setRequiresPolice(isChecked);
+//
+//            }
+//        });
+
+
 
 
 
@@ -131,4 +148,25 @@ public class CrimeFragment extends Fragment{
     private void updateDate() {
         mDateButton.setText(mcrime.getDate().toString());
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_crime,menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.delete_crime){
+            CrimeLab crimeLab = CrimeLab.get(getActivity());
+            crimeLab.deleteCrime(mcrime);
+            getActivity().finish();
+            return true;
+
+
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
 }

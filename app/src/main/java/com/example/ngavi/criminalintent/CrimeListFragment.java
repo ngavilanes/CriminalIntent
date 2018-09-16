@@ -172,9 +172,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
 
 
         }
-        public void UpdateDate(){ //AHHHHHH
-            mDateTextview.setText(mcrime.getParsedDate(mcrime.getDate()));
-        }
+
 
 
 

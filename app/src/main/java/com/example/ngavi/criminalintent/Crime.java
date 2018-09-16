@@ -19,6 +19,7 @@ public class Crime {
 
 
 
+
     public Crime(){
         mID = UUID.randomUUID();
 
@@ -57,6 +58,10 @@ public class Crime {
     public void setSolved(boolean solved) {
         this.msolved = solved;
     }
+
+
+
+
 
     public boolean getRequiresPolice(){
         return mRequiresPolice;

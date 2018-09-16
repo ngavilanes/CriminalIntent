@@ -20,17 +20,17 @@ public class CrimeLab {
 
     private CrimeLab(Context context){ // private constructor(singleton) for crimelab that will hold every crime
       //  mCrimes= new L
-        mCrimes = new LinkedHashMap<>();
-//        for(int i = 0; i<100; i++){
-//            Crime crime = new Crime();
-//            crime.setTitle("Crime #" + i);
-//            crime.setSolved(i%2==0); //every other crime solved
-//            crime.setRequiresPolice(i%5==0);
-//            mCrimes.put(crime.getID(),crime);
+        mCrimes = new LinkedHashMap<UUID, Crime>();
+        for(int i = 0; i<100; i++){
+            Crime crime = new Crime();
+            crime.setTitle("Crime #" + i);
+            crime.setSolved(i%2==0); //every other crime solved
+            crime.setRequiresPolice(i%5==0);
+            mCrimes.put(crime.getID(),crime);
 //
 //
 //
-//        }
+        }
     }
 
     public LinkedHashMap<UUID, Crime> getCrimes(){
@@ -57,9 +57,17 @@ public class CrimeLab {
     }
 
     public void addCrime(Crime crime){
+        crime.setTitle("Crime #");
+
         mCrimes.put(crime.getID(),crime);
 
     }
+
+    public void deleteCrime(Crime crime){
+        mCrimes.remove(crime.getID());
+    }
+
+
 
 
 
