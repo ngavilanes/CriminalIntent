@@ -54,7 +54,7 @@ public class CrimePagerActivity extends AppCompatActivity {
             }
         });
 
-        id =(UUID)getIntent().getSerializableExtra(EXTRA_CRIME_ID);  //getting information from crimelistfragment to obtain id of crime that was pressed on the list
+        id =(UUID)getIntent().getSerializableExtra(EXTRA_CRIME_ID);  //getting id of crime from intent that was pressed on the list
         mpos = new ArrayList<Crime>(mCrimes.values()).indexOf(mCrimes.get(id));
         mViewPager.setCurrentItem(mpos);
 

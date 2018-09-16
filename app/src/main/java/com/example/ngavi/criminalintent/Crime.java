@@ -23,8 +23,7 @@ public class Crime {
         mID = UUID.randomUUID();
 
         mDate = new Date();
-        SimpleDateFormat df = new SimpleDateFormat(" EEEE | MMM,dd,yyyy | hh:mm aaa"); //ALWAYS USE SimpleDateFormat!!!!!
-        mParsedDate = df.format(mDate);
+
 
     }
 
@@ -65,7 +64,9 @@ public class Crime {
     public void setRequiresPolice(boolean RequiresPolice){
         mRequiresPolice = RequiresPolice;
     }
-    public String getParsedDate() {
+    public String getParsedDate(Date date) {
+        SimpleDateFormat df = new SimpleDateFormat(" EEEE | MMM,dd,yyyy | hh:mm aaa"); //ALWAYS USE SimpleDateFormat!!!!!
+        mParsedDate = df.format(date);
         return mParsedDate;
     }
 
