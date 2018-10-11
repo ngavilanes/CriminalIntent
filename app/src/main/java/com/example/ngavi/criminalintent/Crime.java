@@ -16,17 +16,25 @@ public class Crime {
     private boolean msolved;
     private boolean mRequiresPolice;
     private String mParsedDate;
+    private String mSuspect = null;
+
 
 
 
 
     public Crime(){
-        mID = UUID.randomUUID();
-
-        mDate = new Date();
+        //mID = UUID.randomUUID();
+        this(UUID.randomUUID());
+       // mDate = new Date();
 
 
     }
+
+    public Crime(UUID id){
+        mID = id;
+        mDate = new Date();
+    }
+
 
 
     //right click --> generate--> getter and setter shortcut
@@ -57,6 +65,14 @@ public class Crime {
 
     public void setSolved(boolean solved) {
         this.msolved = solved;
+    }
+
+    public String getSuspect() {
+        return mSuspect;
+    }
+
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
     }
 
 

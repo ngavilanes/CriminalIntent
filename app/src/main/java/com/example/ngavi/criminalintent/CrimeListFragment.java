@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,8 @@ import java.util.UUID;
 
 public class CrimeListFragment extends android.support.v4.app.Fragment {
     private RecyclerView mCrimeRecyclerView;
+    private LinearLayout mLinearLayout;
+    private Button mAddButton;
     private CrimeAdapter mAdapter;
     public int mLastPositionClicked;
     private boolean mSubtitleVisible;
@@ -43,6 +46,8 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         setHasOptionsMenu(true);
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view); //using fragment_crime_list view to find the recyclerview ID
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity())); //recyclerView require LayoutManagers to work properly--> it positions objects and manages scrolling
+        mLinearLayout = (LinearLayout) view.findViewById(R.id.empty_crime_list);
+        mAddButton = (Button) view.findViewById(R.id.Add_button);
         //LinearLayoutManager - positions items in the list vertically
 
         UpdateUI();
@@ -70,8 +75,25 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
             mCrimeRecyclerView.setAdapter(mAdapter);
         }
         else{
+            mAdapter.setCrimes(crimes);
             mAdapter.notifyItemChanged(mLastPositionClicked); //detects changes to UI (title change)
 
+        }
+
+        if(crimes.size()>0){
+            mLinearLayout.setVisibility(View.GONE);
+        }
+        else{
+            mLinearLayout.setVisibility(View.VISIBLE);
+            mAddButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Crime crime = new Crime();
+                    CrimeLab.get(getActivity()).addCrime(crime);
+                    Intent intent = CrimePagerActivity.NewIntent(getActivity(), crime.getID());
+                    startActivity(intent);
+                }
+            });
         }
 
         updateSubtitle();
@@ -117,7 +139,7 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
     public void updateSubtitle(){
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
-        String subtitle = getString(R.string.subtitle_format, crimeCount);
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_plural, crimeCount, crimeCount);
 
         if(!mSubtitleVisible){
             subtitle = null;
@@ -226,6 +248,9 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         public CrimeAdapter(LinkedHashMap<UUID,Crime> Crimes){
             mCrimes = Crimes;
         }
+        public void setCrimes(LinkedHashMap<UUID,Crime> crimes){
+            mCrimes = crimes;
+        }
 
         @NonNull
         @Override
@@ -277,4 +302,6 @@ public class CrimeListFragment extends android.support.v4.app.Fragment {
         super.onSaveInstanceState(outState);
         outState.putBoolean(SAVED_SUBTITLE_VISIBLE,mSubtitleVisible);
     }
+
+
 }
